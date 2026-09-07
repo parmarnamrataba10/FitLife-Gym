@@ -16,7 +16,10 @@ const limiter = rateLimit({
 });
 
 app.use(helmet());
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+const corsOrigins = process.env.CLIENT_URL
+  ? process.env.CLIENT_URL.split(',').map(s => s.trim())
+  : ['http://localhost:3000'];
+app.use(cors({ origin: corsOrigins, credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());

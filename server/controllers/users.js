@@ -95,7 +95,7 @@ exports.uploadPhoto = async (req, res, next) => {
       return next(new ErrorResponse('Please upload a file', 400));
     }
 
-    const photoPath = `/uploads/${req.file.filename}`;
+    const photoPath = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
 
     const user = await User.findByIdAndUpdate(
       req.params.id,

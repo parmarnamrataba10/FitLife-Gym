@@ -54,8 +54,8 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 };
 
 userSchema.methods.getSignedJwtToken = function () {
-  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET || 'gym_management_jwt_secret_key_2026', {
+    expiresIn: process.env.JWT_EXPIRE || '30d'
   });
 };
 
