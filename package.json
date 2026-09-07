@@ -2,8 +2,8 @@
   "name": "fitlife-gym",
   "private": true,
   "scripts": {
-    "netlify:build": "npm --prefix server install && npm run build --prefix client",
-    "build": "npm --prefix server install && npm run build --prefix client",
+    "netlify:build": "npm --prefix server install && npm --prefix client install && npm run build --prefix client",
+    "build": "npm --prefix server install && npm --prefix client install && npm run build --prefix client",
     "dev:server": "npm run dev --prefix server",
     "dev:client": "npm run dev --prefix client"
   }
