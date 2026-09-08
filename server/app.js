@@ -31,6 +31,14 @@ if (process.env.NODE_ENV === 'development') {
 }
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+app.get('/api/__debug', (req, res) => {
+  res.json({
+    url: req.url,
+    headers: req.headers,
+    cookies: req.cookies
+  });
+});
+
 app.use('/api/auth', require('./routes/auth'));
 app.use('/api/users', require('./routes/users'));
 app.use('/api/members', require('./routes/members'));
