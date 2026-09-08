@@ -46,6 +46,7 @@ app.get('/api/__debug', (req, res) => {
   }
   res.json({
     url: req.url,
+    deployId: req.headers['x-nf-deploy-id'] || null,
     hasAuthHeader: !!auth,
     bearerPresent: !!bearer,
     secretLen: (process.env.JWT_SECRET || '').length,
@@ -53,6 +54,15 @@ app.get('/api/__debug', (req, res) => {
     verifyResult,
     headers: Object.keys(req.headers),
     cookies: req.cookies
+  });
+});
+
+app.get('/api/__debugme', require('./middleware/auth').protect, (req, res) => {
+  res.json({
+    ok: true,
+    userId: req.user.id,
+    role: req.user.role,
+    deployId: req.headers['x-nf-deploy-id'] || null
   });
 });
 
