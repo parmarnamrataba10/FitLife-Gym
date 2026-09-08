@@ -16,7 +16,7 @@ const protect = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'gym_management_jwt_secret_key_2026');
     req.user = await User.findById(decoded.id).select('-password');
     if (!req.user) {
       return next(new ErrorResponse('User not found', 404));
