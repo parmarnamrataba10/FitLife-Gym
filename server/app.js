@@ -32,9 +32,26 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get('/api/__debug', (req, res) => {
+  const jwt = require('jsonwebtoken');
+  const auth = req.headers.authorization || '';
+  const bearer = auth.startsWith('Bearer ') ? auth.slice(7) : null;
+  let verifyResult = null;
+  if (bearer) {
+    try {
+      const decoded = jwt.verify(bearer, process.env.JWT_SECRET || 'gym_management_jwt_secret_key_2026');
+      verifyResult = { ok: true, id: decoded.id };
+    } catch (err) {
+      verifyResult = { ok: false, error: err.message };
+    }
+  }
   res.json({
     url: req.url,
-    headers: req.headers,
+    hasAuthHeader: !!auth,
+    bearerPresent: !!bearer,
+    secretLen: (process.env.JWT_SECRET || '').length,
+    secretTail: (process.env.JWT_SECRET || '').slice(-4),
+    verifyResult,
+    headers: Object.keys(req.headers),
     cookies: req.cookies
   });
 });
