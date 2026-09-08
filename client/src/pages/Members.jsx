@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { memberService } from '../services/memberService'
 import { planService } from '../services/planService'
 import { useToast } from '../context/ToastContext'
+import { useAuth } from '../context/AuthContext'
 import Spinner from '../components/Spinner'
 import Modal from '../components/Modal'
 import SearchInput from '../components/SearchInput'
@@ -31,6 +32,8 @@ export default function Members() {
   const [form, setForm] = useState(initialForm)
   const [saving, setSaving] = useState(false)
   const { addToast } = useToast()
+  const { user } = useAuth()
+  const isAdmin = user?.role === 'admin'
 
   const fetchMembers = async () => {
     setLoading(true)
@@ -132,9 +135,11 @@ export default function Members() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Members</h1>
           <p className="text-sm text-gray-500 mt-1">{total} total members</p>
         </div>
-        <button onClick={handleCreate} className="flex items-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors text-sm font-medium">
-          <FiPlus /> Add Member
-        </button>
+        {isAdmin && (
+          <button onClick={handleCreate} className="flex items-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg transition-colors text-sm font-medium">
+            <FiPlus /> Add Member
+          </button>
+        )}
       </div>
 
       <div className="flex flex-col sm:flex-row gap-4">
@@ -200,15 +205,19 @@ export default function Members() {
                     </td>
                     <td className="px-4 py-3 text-right">
                       <div className="flex items-center justify-end gap-1">
-                        <button onClick={() => handleToggleStatus(member._id)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Toggle Status">
-                          {member.status === 'active' ? <FiToggleRight className="text-success" /> : <FiToggleLeft className="text-gray-400" />}
-                        </button>
-                        <button onClick={() => handleEdit(member)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Edit">
-                          <FiEdit2 className="text-gray-500" />
-                        </button>
-                        <button onClick={() => handleDelete(member._id)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Delete">
-                          <FiTrash2 className="text-danger" />
-                        </button>
+                        {isAdmin && (
+                          <>
+                            <button onClick={() => handleToggleStatus(member._id)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Toggle Status">
+                              {member.status === 'active' ? <FiToggleRight className="text-success" /> : <FiToggleLeft className="text-gray-400" />}
+                            </button>
+                            <button onClick={() => handleEdit(member)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Edit">
+                              <FiEdit2 className="text-gray-500" />
+                            </button>
+                            <button onClick={() => handleDelete(member._id)} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="Delete">
+                              <FiTrash2 className="text-danger" />
+                            </button>
+                          </>
+                        )}
                         <Link to={`/members/${member._id}`} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors" title="View Profile">
                           <FiChevronRight className="text-gray-400" />
                         </Link>
